@@ -6,28 +6,29 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Prisma } from '@prisma/client';
+
+type Belt = Prisma.BeltGetPayload<{ include: { ninja: true } }>;
 
 export interface Response {
   data: any;
 }
 
 /**
- * Transform the ninja object to a format suitable for the frontend
- * @param ninja
+ * Transform the belt object to a format suitable for the frontend
+ * @param belt
  */
-const transformNinja = (ninja) => {
-  return {
-    ninja_name: ninja.name,
-    ninja_id: ninja.id,
-  };
-};
+export const transform = (belt: Belt) => ({
+  belt_level: belt.level,
+  belt_id: belt.id,
+});
 
 @Injectable()
-export class NinjaResourceInterceptor<T> implements NestInterceptor<T> {
+export class BeltResourceInterceptor<T> implements NestInterceptor<T> {
   intercept(_: ExecutionContext, next: CallHandler): Observable<Response> {
     return next.handle().pipe(
-      map((ninja) => ({
-        data: transformNinja(ninja),
+      map((belt: Belt) => ({
+        data: transform(belt),
       })),
     );
   }
@@ -37,9 +38,9 @@ export class NinjaResourceInterceptor<T> implements NestInterceptor<T> {
 export class NinjaCollectionInterceptor<T> implements NestInterceptor<T> {
   intercept(_: ExecutionContext, next: CallHandler): Observable<Response> {
     return next.handle().pipe(
-      map((ninjas) => {
+      map((belts: Array<Belt>) => {
         return {
-          data: ninjas.map((ninja) => transformNinja(ninja)),
+          data: belts.map((belt) => transform(belt)),
         };
       }),
     );

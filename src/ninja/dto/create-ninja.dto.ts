@@ -1,4 +1,10 @@
-import { MinLength, IsEnum, IsArray, ValidateNested } from 'class-validator';
+import {
+  MinLength,
+  IsEnum,
+  IsArray,
+  ValidateNested,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class SkillsDto {
@@ -13,6 +19,7 @@ export class CreateNinjaDto {
   @MinLength(3)
   name: string;
 
+  @IsOptional()
   @IsArray()
   @ValidateNested()
   @Type(() => SkillsDto)

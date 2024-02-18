@@ -8,18 +8,18 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { NinjasService } from './ninjas.service';
-import { CreateNinjaDto } from './dto/create-ninja.dto';
-import { UpdateNinjaDto } from './dto/update-ninja.dto';
-import { NinjaRequestPipe } from './transformers/request.pipe';
+import { NinjaService } from './ninja.service';
 import {
   NinjaCollectionInterceptor,
   NinjaResourceInterceptor,
 } from './transformers/response.interceptor';
+import { NinjaRequestPipe } from './transformers/request.pipe';
+import { CreateNinjaDto } from './dto/create-ninja.dto';
+import { UpdateNinjaDto } from './dto/update-ninja.dto';
 
 @Controller('ninjas')
-export class NinjasController {
-  constructor(private readonly ninjasService: NinjasService) {}
+export class NinjaController {
+  constructor(private readonly ninjasService: NinjaService) {}
 
   @Get()
   @UseInterceptors(NinjaCollectionInterceptor)
@@ -27,16 +27,16 @@ export class NinjasController {
     return this.ninjasService.getAll();
   }
 
-  @Post()
-  @UseInterceptors(NinjaResourceInterceptor)
-  create(@Body(NinjaRequestPipe) createNinjaDto: CreateNinjaDto) {
-    return this.ninjasService.create(createNinjaDto);
-  }
-
   @Get(':id')
   @UseInterceptors(NinjaResourceInterceptor)
   show(@Param('id') id: string) {
     return this.ninjasService.get(id);
+  }
+
+  @Post()
+  @UseInterceptors(NinjaResourceInterceptor)
+  create(@Body(NinjaRequestPipe) createNinjaDto: CreateNinjaDto) {
+    return this.ninjasService.create(createNinjaDto);
   }
 
   @Patch(':id')

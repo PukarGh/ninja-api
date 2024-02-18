@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Belt {
+  id      Int    @id @default(autoincrement())
+  level   String
+  ninjaId Int?
+  ninja   Ninja? @relation(fields: [ninjaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("belt")
+}
+
+model Ninja {
+  id    Int    @id @default(autoincrement())
+  name  String
+  belts Belt[]
+
+  @@map("ninja")
+}
